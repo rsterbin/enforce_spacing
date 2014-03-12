@@ -60,14 +60,22 @@ endfun
 " accordingly
 "
 fun! g:EnforceTabsVsSpaces()
+    let enforce = 'none'
     if exists('b:enforceTabs') && b:enforceTabs == 'y'
+        let enforce = 'tabs'
+    elseif exists('b:enforceSpaces') && b:enforceSpaces == 'y'
+        let enforce = 'spaces'
+    elseif exists('g:enforceTabs') && g:enforceTabs == 'y'
+        let enforce = 'tabs'
+    elseif exists('g:enforceSpaces') && g:enforceSpaces == 'y'
+        let enforce = 'spaces'
+    endif
+    if enforce == 'tabs'
         call g:ToggleTabsVsSpaces('tabs')
         call g:EnforceSpacesToTabs()
-    else
-        if exists('b:enforceSpaces') && b:enforceSpaces == 'y'
-            call g:ToggleTabsVsSpaces('spaces')
-            call g:EnforceTabsToSpaces()
-        endif
+    elseif enforce == 'spaces'
+        call g:ToggleTabsVsSpaces('spaces')
+        call g:EnforceTabsToSpaces()
     endif
 endfun
 
@@ -79,8 +87,23 @@ endfun
 fun! g:EnforceTrailingWhitespace()
     let this_ext  = expand('%:e')
     let this_file = expand('%:t')
-    if exists('b:enforceNoTrailingWhitespace') && has_key(b:enforceNoTrailingWhitespace, this_ext) && b:enforceNoTrailingWhitespace[this_ext] == 'y'
-        if exists('b:ignoreTrailingWhitespace') && has_key(b:ignoreTrailingWhitespace, this_file) && b:ignoreTrailingWhitespace[this_file] == 'y'
+
+    let enforce = {}
+    if exists('b:enforceNoTrailingWhitespace')
+        let enforce = b:enforceNoTrailingWhitespace
+    elseif exists('g:enforceNoTrailingWhitespace')
+        let enforce = g:enforceNoTrailingWhitespace
+    endif
+
+    let ignore = {}
+    if exists('b:ignoreTrailingWhitespace')
+        let ignore = b:ignoreTrailingWhitespace
+    elseif exists('g:ignoreTrailingWhitespace')
+        let ignore = g:ignoreTrailingWhitespace
+    endif
+
+    if has_key(enforce, this_ext) && enforce[this_ext] == 'y'
+        if has_key(ignore, this_file) && ignore[this_file] == 'y'
         else
             :%s/\s\+$//e
         endif

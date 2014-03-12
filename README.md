@@ -3,7 +3,7 @@ enforce\_spacing
 
 Vim plugin for switching between tabs and spaces, and for stripping trailing whitespace
 
-Use these buffer-level settings:
+Use these settings:
 
 * `enforceTabs` - Set to 'y' to make sure all four-space indenting gets
   converted to tabs
@@ -17,4 +17,7 @@ Use these buffer-level settings:
   name.  If the file's extension matches `enforceNoTrailingWhitespace`, but you
   don't want to strip whitespace in that file, add an entry in this directory,
   set to `y`.
+
+You can set them at the global level (in your vimrc), or at the buffer level,
+if you want different settings in one buffer.
 
